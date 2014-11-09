@@ -9,3 +9,6 @@ while line = s.gets   #read lines from the socket
 	puts line.chop
 end
 s.close
+
+
+puts Dir["./*.html"]
