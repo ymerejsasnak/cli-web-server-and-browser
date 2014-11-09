@@ -4,16 +4,12 @@ host = "localhost"
 port = 2000
 path = "index.html"
 
-request = "GET #{path} HTTP/1.0\r\n\r\n"
-header = "From: jk@mail.com  User-Agent: JKbrowser\r\n\r\n"
-
-puts request + header
+request = "GET #{path} HTTP/1.0\r\nFrom: jk@mail.com\r\nUser-Agent: JKbrowser\r\n\r\n"
 
 socket = TCPSocket.open(host, port)
-socket.print(request + header)
+socket.print(request)
 response = socket.read
 
-response, headers, body = response.split("\r\n\r\n", 3)
-puts response
+headers, body = response.split("\r\n\r\n", 2)
 puts headers
 puts body
