@@ -8,7 +8,7 @@ class Browser
 	  @host = "localhost"
     @port = 2000
     @path = (ARGV[0]) #just type the file to find from the command line
-    @request = "GET #{path} HTTP/1.0\r\nFrom: jk@mail.com\r\nUser-Agent: JKbrowser\r\nTime: #{Time.now}\r\n\r\n"
+    @request = "GET #{path} HTTP/1.0\r\nFrom: jk@mail.com\r\nUser-Agent: JKbrowser\r\nDate: #{Time.now}\r\n\r\n"
   end
 
   def send_request

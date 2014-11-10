@@ -9,39 +9,61 @@ class Server
   end
   
   def run
-    loop { 
+    loop do 
     	client = server.accept            #wait for client to connect
   	
-    	headers = []
-    	begin
-    	  line = client.gets
-    	  headers << line
-    	end until line =~ /^\s*$/   #line begins and ends with one or more whitespace characters  
+    	headers = get_headers(client)
+    	
+    	display_request(client, headers)
+    	 
+      request = headers[0].split(" ") 
+      
+      response = parse_request(request)
+     
+      send_response(client, response)
+    end
+  end
 
-    	request = headers[0].split(" ") 
+  #######
+  private
+  #######
 
-    	if request[0] == "GET"
-	    	resource = request[1]
-	    	version = request[2]
-	      if File.exist?(resource)
-        	body = File.open(resource) { |f| f.read }
-        	response = "#{version} 200 OK\r\nServer: JKisAwesome2.0\r\nDate: #{Time.now}\r\nContent-Type: text/html\r\nContent-Length: #{body.size}\r\n\r\n"
-        else
-        	response = "#{version} 404 Not Found\r\n\r\n"
-        end
-      end
-
-      puts "received request: #{headers[0..2].join(" ")}"
-      puts "#{headers[3..(-1)].join(" ")}"
+  def get_headers(client)
+  	headers = []
+  	begin
+      line = client.gets
+      headers << line
+    end until line =~ /^\s*$/   #line begins and ends with one or more whitespace characters 
+    return headers
+  end
   
-      client.print response
-      client.print body unless body.nil?
+  def display_request(client, headers)
+    puts
+    puts "received request: #{headers[0..2].join(" ")}"
+    puts "#{headers[3..(-1)].join(" ")}"
+  end
 
-      client.puts "Closing the connection. Bye!"
-	    client.close
-	  }
-	end
+  def parse_request(request)
+    if request[0] == "GET"
+	   	resource = request[1]
+	   	version = request[2]
+	    if File.exist?(resource)
+       	body = File.open(resource) { |f| f.read }
+       	return "#{version} 200 OK\r\nServer: JKisAwesome2.0\r\nDate: #{Time.now}\r\nContent-Length: #{body.size}\r\n\r\n" + body
+      else
+       	return "#{version} 404 Not Found\r\n\r\n"
+      end
+    end
+  end
+
+  def send_response(client, response)
+    client.print response
+    client.close
+  end
+
 end
+
+
 
 server = Server.new
 server.run
