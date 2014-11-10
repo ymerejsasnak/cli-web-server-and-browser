@@ -1,4 +1,5 @@
 require 'socket'
+require 'json'
 
 
 class Server
@@ -18,7 +19,7 @@ class Server
     	 
       request = headers[0].split(" ") 
       
-      response = parse_request(request)
+      response = parse_request(client, request)
      
       send_response(client, response)
     end
@@ -43,18 +44,24 @@ class Server
     puts "#{headers[3..(-1)].join(" ")}"
   end
 
-  def parse_request(request)
+  def parse_request(client, request)
+    resource = request[1]
+	  version = request[2]
     if request[0] == "GET"
-	   	resource = request[1]
-	   	version = request[2]
-	    if File.exist?(resource)
+	   	if File.exist?(resource)
        	body = File.open(resource) { |f| f.read }
        	return "#{version} 200 OK\r\nServer: JKisAwesome2.0\r\nDate: #{Time.now}\r\nContent-Length: #{body.size}\r\n\r\n" + body
       else
        	return "#{version} 404 Not Found\r\n\r\n"
       end
+    elsif request[0] == "POST"
+    	params = JSON.parse(client.gets) #this should be the post line right?
+      body = File.open("thanks.html") do |f|
+      	f.read.gsub("<%= yield %>", "<li>Name: #{params['user'][':name']}</li>\n<li>Email: #{params['user']['email']}</li>")
+      end
+      return "#{version} 200 OK\r\nServer: JKisAwesome2.0\r\nDate: #{Time.now}\r\nContent-Length: #{body.size}\r\n\r\n" + body     
     else
-    	  return "#{version} 400 Bad Request\r\n\r\n"
+    	return "#{version} 400 Bad Request\r\n\r\n"
     end
 
   end
