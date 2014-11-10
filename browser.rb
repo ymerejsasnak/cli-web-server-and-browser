@@ -2,7 +2,7 @@ require 'socket'
 
 host = "localhost"
 port = 2000
-path = "index.html"
+path = (ARGV[0]) #just type the file to find from the command line
 
 request = "GET #{path} HTTP/1.0\r\nFrom: jk@mail.com\r\nUser-Agent: JKbrowser\r\n\r\n"
 
