@@ -3,7 +3,7 @@ require 'socket'
 
 class Server
   attr_reader :server
-    
+
   def initialize
   	@server = TCPServer.open(2000)       #listens on port 2000
   end
@@ -24,8 +24,8 @@ class Server
 	    	resource = request[1]
 	    	version = request[2]
 	      if File.exist?(resource)
-        	response = "#{version} 200 OK\r\nServer: JKisAwesome2.0\r\n\r\n"
         	body = File.open(resource) { |f| f.read }
+        	response = "#{version} 200 OK\r\nServer: JKisAwesome2.0\r\nFilesize: #{body.size}\r\n"
         else
         	response = "#{version} 404 Not Found\r\n\r\n"
         end
