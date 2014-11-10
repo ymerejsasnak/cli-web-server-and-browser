@@ -14,11 +14,17 @@ class Browser
   def send_request
     socket = TCPSocket.open(host, port)
     socket.print(request)
-    response = socket.read
+    response = socket.read.split("\r\n\r\n")
 
-    headers, body = response.split("\r\n\r\n", 2)
+    headers, body = response[0], response[1]
+    puts
+    puts
     puts headers
+    puts
+    puts
     puts body
+    puts
+    puts
   end
 
 end

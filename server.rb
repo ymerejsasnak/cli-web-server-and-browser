@@ -25,7 +25,7 @@ class Server
 	    	version = request[2]
 	      if File.exist?(resource)
         	body = File.open(resource) { |f| f.read }
-        	response = "#{version} 200 OK\r\nServer: JKisAwesome2.0\r\nFilesize: #{body.size}\r\n"
+        	response = "#{version} 200 OK\r\nServer: JKisAwesome2.0\r\nDate: #{Time.now}\r\nContent-Type: text/html\r\nContent-Length: #{body.size}\r\n\r\n"
         else
         	response = "#{version} 404 Not Found\r\n\r\n"
         end
