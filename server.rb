@@ -53,7 +53,10 @@ class Server
       else
        	return "#{version} 404 Not Found\r\n\r\n"
       end
+    else
+    	  return "#{version} 400 Bad Request\r\n\r\n"
     end
+
   end
 
   def send_response(client, response)
