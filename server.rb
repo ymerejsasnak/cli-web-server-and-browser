@@ -45,25 +45,24 @@ class Server
   end
 
   def parse_request(client, request)
+  	method = request[0]
     resource = request[1]
 	  version = request[2]
-    if request[0] == "GET"
+    if method == "GET"
 	   	if File.exist?(resource)
        	body = File.open(resource) { |f| f.read }
        	return "#{version} 200 OK\r\nServer: JKisAwesome2.0\r\nDate: #{Time.now}\r\nContent-Length: #{body.size}\r\n\r\n" + body
       else
        	return "#{version} 404 Not Found\r\n\r\n"
       end
-    elsif request[0] == "POST"
-    	params = JSON.parse(client.gets) #this should be the post line right?
-      body = File.open("thanks.html") do |f|
-      	f.read.gsub("<%= yield %>", "<li>Name: #{params['user'][':name']}</li>\n<li>Email: #{params['user']['email']}</li>")
-      end
+    elsif method == "POST"
+    	params = JSON.parse(client.gets)
+    	body = File.open("thanks.html") { |f| f.read }
+      body.gsub!("<%= yield %>", "<li>Name: #{params['user']['name']}</li><li>Email: #{params['user']['email']}</li>")
       return "#{version} 200 OK\r\nServer: JKisAwesome2.0\r\nDate: #{Time.now}\r\nContent-Length: #{body.size}\r\n\r\n" + body     
     else
     	return "#{version} 400 Bad Request\r\n\r\n"
     end
-
   end
 
   def send_response(client, response)

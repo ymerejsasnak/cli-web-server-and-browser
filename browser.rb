@@ -12,7 +12,7 @@ class Browser
   def send_request(method, path, post_request="")
     socket = TCPSocket.open(host, port)
     content_string = "Content-Length: #{post_request.size}" unless post_request == ""
-    request = "#{method} #{path} HTTP/1.0\r\nFrom: jk@mail.com\r\nDate: #{Time.now}\r\n#{content_string}\r\n\r\n#{post_request}"
+    request = "#{method} #{path} HTTP/1.0\r\nFrom: jk@mail.com\r\nDate: #{Time.now}\r\n#{content_string}\r\n\r\n#{post_request}\r\n"
     socket.print(request)
     return socket.read.split("\r\n\r\n")
   end
